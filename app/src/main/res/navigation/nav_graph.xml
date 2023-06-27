@@ -9,5 +9,20 @@
         android:id="@+id/usersListFragment"
         android:name="com.example.socialnetworkusers.presentation.ui.view.UsersListFragment"
         android:label="fragment_users_list"
-        tools:layout="@layout/fragment_users_list" />
+        tools:layout="@layout/fragment_users_list" >
+        <action
+            android:id="@+id/action_usersListFragment_to_userPostsFragment"
+            app:destination="@id/userPostsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userPostsFragment"
+        android:name="com.example.socialnetworkusers.presentation.ui.view.UserPostsFragment"
+        android:label="fragment_user_posts"
+        tools:layout="@layout/fragment_user_posts" >
+
+        <argument
+            android:name="userEntity"
+            app:argType="com.example.socialnetworkusers.data.pojos.UserEntityFromApiResponse"/>
+
+    </fragment>
 </navigation>

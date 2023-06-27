@@ -5,10 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.socialnetworkusers.R
+import com.example.socialnetworkusers.databinding.FragmentUsersListBinding
+import com.example.socialnetworkusers.presentation.ui.adapters.UserEntityItemAdapter
+import com.example.socialnetworkusers.presentation.ui.viewmodels.UserListViewModel
 
 
 class UsersListFragment : Fragment() {
+    private var _binding: FragmentUsersListBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: UserListViewModel = UserListViewModel()
 
 
 
@@ -16,8 +24,39 @@ class UsersListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_users_list, container, false)
+
+        _binding = FragmentUsersListBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.getUserListFromApi()
+
+        val adapter = UserEntityItemAdapter{userEntityFromApiResponse -> viewModel.onUserClicked(userEntityFromApiResponse) }
+
+        binding.listOfUsersRecycler.adapter = adapter
+
+        viewModel.usersList.observe(viewLifecycleOwner, Observer {
+            it?.let { adapter.submitList(it) }
+        })
+
+        viewModel.navigateToUserDetails.observe(viewLifecycleOwner, Observer {
+            userEntity -> userEntity?.let {
+                val action = UsersListFragmentDirections.actionUsersListFragmentToUserPostsFragment(userEntity)
+                this.findNavController().navigate(action)
+                viewModel.onUserNavigated()
+
+        }
+        })
+
+
+
+        return view
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 

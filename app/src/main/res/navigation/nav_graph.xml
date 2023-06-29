@@ -8,16 +8,18 @@
     <fragment
         android:id="@+id/usersListFragment"
         android:name="com.example.socialnetworkusers.presentation.ui.view.UsersListFragment"
-        android:label="fragment_users_list"
+        android:label=""
         tools:layout="@layout/fragment_users_list" >
         <action
             android:id="@+id/action_usersListFragment_to_userPostsFragment"
-            app:destination="@id/userPostsFragment" />
+            app:destination="@id/userPostsFragment"
+            app:popUpTo="@id/userPostsFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/userPostsFragment"
         android:name="com.example.socialnetworkusers.presentation.ui.view.UserPostsFragment"
-        android:label="fragment_user_posts"
+        android:label="Detalii contact"
         tools:layout="@layout/fragment_user_posts" >
 
         <argument

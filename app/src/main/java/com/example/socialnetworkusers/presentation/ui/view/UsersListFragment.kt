@@ -5,9 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+
 import androidx.navigation.fragment.findNavController
-import com.example.socialnetworkusers.R
 import com.example.socialnetworkusers.databinding.FragmentUsersListBinding
 import com.example.socialnetworkusers.presentation.ui.adapters.UserEntityItemAdapter
 import com.example.socialnetworkusers.presentation.ui.viewmodels.UserListViewModel
@@ -23,7 +22,8 @@ class UsersListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
 
         _binding = FragmentUsersListBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -32,22 +32,29 @@ class UsersListFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel.getUserListFromApi()
 
-        val adapter = UserEntityItemAdapter{userEntityFromApiResponse -> viewModel.onUserClicked(userEntityFromApiResponse) }
+
+        val adapter = UserEntityItemAdapter(requireContext()) { userEntityFromApiResponse ->
+            viewModel.onUserClicked(
+                userEntityFromApiResponse
+            )
+        }
 
         binding.listOfUsersRecycler.adapter = adapter
 
-        viewModel.usersList.observe(viewLifecycleOwner, Observer {
+        viewModel.usersList.observe(viewLifecycleOwner) {
             it?.let { adapter.submitList(it) }
-        })
+        }
 
-        viewModel.navigateToUserDetails.observe(viewLifecycleOwner, Observer {
-            userEntity -> userEntity?.let {
-                val action = UsersListFragmentDirections.actionUsersListFragmentToUserPostsFragment(userEntity)
+        viewModel.navigateToUserDetails.observe(viewLifecycleOwner) { userEntity ->
+            userEntity?.let {
+                val action = UsersListFragmentDirections.actionUsersListFragmentToUserPostsFragment(
+                    userEntity
+                )
                 this.findNavController().navigate(action)
                 viewModel.onUserNavigated()
 
+            }
         }
-        })
 
 
 

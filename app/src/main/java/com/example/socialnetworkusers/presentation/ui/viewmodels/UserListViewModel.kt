@@ -1,21 +1,17 @@
 package com.example.socialnetworkusers.presentation.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.socialnetworkusers.data.pojos.UserEntityFromApiResponse
 import com.example.socialnetworkusers.data.repository.ApiRepositoryImpl
 import com.example.socialnetworkusers.data.sources.api.RetrofitInstance
-import com.example.socialnetworkusers.data.sources.api.UsersApi
 import com.example.socialnetworkusers.data.usecases.FetchUsersListUseCaseImpl
-import com.example.socialnetworkusers.domain.repository.ApiRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class UserListViewModel: ViewModel() {
 
-    val api = RetrofitInstance.api
+    private val api = RetrofitInstance.api
     private val repository = ApiRepositoryImpl(api)
     private val fetchUsersListUseCase = FetchUsersListUseCaseImpl(repository)
 
@@ -32,6 +28,8 @@ class UserListViewModel: ViewModel() {
                 result ->
                 _usersList.value = result.filter { userEntityFromApiResponse -> userEntityFromApiResponse.status == "active" }
             }
+
+
         }
     }
 
@@ -42,6 +40,9 @@ class UserListViewModel: ViewModel() {
     fun onUserNavigated() {
         _navigateToUserDetails.value = null
     }
+
+
+
 
 
 

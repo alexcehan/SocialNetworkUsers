@@ -9,11 +9,11 @@ import com.example.socialnetworkusers.data.sources.api.RetrofitInstance
 import com.example.socialnetworkusers.data.usecases.FetchPostsListByUserIdUseCaseImpl
 import kotlinx.coroutines.launch
 
-class UserPostsViewModel() : ViewModel() {
+class UserPostsViewModel : ViewModel() {
 
     lateinit var userEntity: UserEntityFromApiResponse
 
-    val api = RetrofitInstance.api
+    private val api = RetrofitInstance.api
     private val repository = ApiRepositoryImpl(api)
     private val fetchPostsListByUserIdUseCase = FetchPostsListByUserIdUseCaseImpl(repository)
 
@@ -22,6 +22,8 @@ class UserPostsViewModel() : ViewModel() {
 
     val postTitle = _postTitle
     val postBody = _postBody
+
+
 
     fun getUserFirstPost() {
         viewModelScope.launch {
@@ -32,14 +34,19 @@ class UserPostsViewModel() : ViewModel() {
                     _postBody.value = ""
                     _postTitle.value = ""
                 } else {
-                    _postTitle.value = result.get(0).title
-                    _postBody.value = result.get(0).body
+                    _postTitle.value = result[0].title
+                    _postBody.value = result[0].body
                 }
-
-
             }
         }
 
+    }
+
+     fun getInitialsOfTheName(name: String): String {
+        val firstNameInitial = name.split(" ")[0][0].uppercase()
+        val lastNameInitial: String = name.split(" ")[1][0].uppercase()
+
+        return "${firstNameInitial}${lastNameInitial}"
     }
 
 
